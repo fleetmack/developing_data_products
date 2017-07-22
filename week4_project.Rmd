@@ -1,0 +1,39 @@
+---
+title: "Data Products Week4 Project - ISU Football Scores"
+author: "Bryan L. Mack"
+date: "July 21, 2017"
+output:
+  ioslides_presentation: default
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## ISU Football scores
+
+This Shiny app reads particular records from a data frame. You select a year, and it will read in the records of the data frame for that year. I am tracking the records of the Iowa State Cyclones college football team. And in case you dind't know, ggplot was invented at Iowa State, so don't knock our crappy football team too much!
+
+## You will get the following output in table format
+
+- Team Iowa State played
+- The score of the game
+- The year the game was played (will match your radio button prompt)
+
+## Reactivity
+
+THe record will then be calculated based on if there is a W or L in the score column. THe L's will be summed as losses, adn the Ws will be summed as wins. The record will be presented in W-L format.
+
+## R Code
+
+The following is the reactive code used to generate the record:
+   wins <- reactive({sqldf("select count(*) from mack_data where score like 'W%' and year = '%s'",input$typeInput[1]) })
+   losses <- reactive({sqldf("select count(*) from mack_data where score like 'L%' and year = '%s'",input$typeInput[1])  })
+   record <- reactive({c("Wins","Losses")})
+       myrecord <- reactive({c(wins,losses)})
+      display_record <- reactive({data.frame(record,myrecord) })
+      output$record <- renderTable({display_record()})
+
+## Hopefully....
+You can read this, having trouble getting presentations to post to RPubs.
